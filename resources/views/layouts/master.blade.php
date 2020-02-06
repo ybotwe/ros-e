@@ -102,6 +102,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 Profile
               </p>
             </router-link>
+            <router-link to="/developer" class="nav-link">
+              <i class="nav-icon fas fa-cog"></i>
+              <p>
+                Developer
+              </p>
+            </router-link>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('logout') }}"
@@ -128,6 +134,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <div class="content">
       <div class="container-fluid">
         <router-view class="mt-3"></router-view>
+        <vue-progress-bar></vue-progress-bar>
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->

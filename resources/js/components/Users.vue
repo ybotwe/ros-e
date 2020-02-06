@@ -6,7 +6,7 @@
           <h3 class="card-title">All Users</h3>
 
           <div class="card-tools">
-            <button class="btn btn-success" data-toggle="modal" data-target="#newUser">
+            <button class="btn btn-success" @click="newModal">
               <i class="fas fa-plus"></i> New User
             </button>
             <!-- Modal -->
@@ -21,12 +21,13 @@
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="newUserTitle">Add new user</h5>
+                    <h5 class="modal-title" v-show="!edit" id="newUserTitle">Add new user</h5>
+                    <h5 class="modal-title" v-show="edit" id="newUserTitle">Update user</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
-                  <form @submit.prevent="createUser">
+                  <form @submit.prevent="edit?updateUser():createUser()">
                     <div class="modal-body">
                       <div class="form-group">
                         <input
@@ -88,8 +89,11 @@
                       </div>
                     </div>
                     <div class="modal-footer">
-                      <button type="submit" class="btn btn-success">
+                      <button v-show="!edit" type="submit" class="btn btn-success">
                         <i class="fas fa-plus"></i> Add User
+                      </button>
+                      <button v-show="edit" type="submit" class="btn btn-success">
+                        <i class="fas fa-pen"></i> Update User
                       </button>
                     </div>
                   </form>
@@ -107,22 +111,22 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Role</th>
+                <th>Created At</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>183</td>
-                <td>John Doe</td>
-                <td>11-7-2014</td>
+              <tr v-for="user in users" :key="user.id">
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role | textUpper }}</td>
+                <td>{{ user.created_at | cutDate }}</td>
                 <td>
-                  <span class="tag tag-success">Approved</span>
-                </td>
-                <td>
-                  <a href="#">
-                    <i class="fas fa-pen"></i>
-                  </a>
-                  <a href="#">
+                  <a href>
+                    <i class="fas fa-pen" @click.prevent="editModal(user)"></i>
+                  </a>/
+                  <a href @click.prevent="deleteUser(user.id)">
                     <i class="fas fa-trash red"></i>
                   </a>
                 </td>
@@ -141,7 +145,10 @@
 export default {
   data() {
     return {
+      edit: false,
+      users: {},
       form: new Form({
+        id: "",
         name: "",
         email: "",
         password: "",
@@ -152,12 +159,106 @@ export default {
     };
   },
   methods: {
+    editModal(user) {
+      this.edit = true;
+      this.form.reset();
+      $("#newUser").modal("show");
+      this.form.fill(user);
+    },
+    newModal() {
+      this.edit = false;
+      this.form.reset();
+      $("#newUser").modal("show");
+    },
+    start() {
+      this.$Progress.start();
+    },
+    finish() {
+      this.$Progress.finish();
+    },
+    fail() {
+      this.$Progress.fail();
+    },
+    loadUsers() {
+      axios.get("api/user").then(({ data }) => (this.users = data.data));
+    },
     createUser() {
-      this.form.post("api/user").then();
+      this.form
+        .post("api/user")
+        .then(() => {
+          this.start();
+          Fire.$emit("LoadUsers");
+          $("#newUser").modal("hide");
+          toast.fire({
+            icon: "success",
+            title: "User created successfully"
+          });
+          Fire.$emit("LoadUsers");
+          this.finish();
+        })
+        .catch(() => {
+          toast.fire({
+            icon: "error",
+            title: "An error occured"
+          });
+        });
+    },
+    deleteUser(id) {
+      //Send DELETE request
+      swal
+        .fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        })
+        .then(result => {
+          if (result.value) {
+            this.form
+              .delete("api/user/" + id)
+              .then(result => {
+                Fire.$emit("LoadUsers");
+                swal.fire("Deleted!", "User has been deleted.", "success");
+              })
+              .catch(() => {
+                swal.fire(
+                  "Failed!",
+                  "An error occured while deleting.",
+                  "error"
+                );
+              });
+          }
+        });
+    },
+    updateUser() {
+      // console.log('updating');
+      this.start();
+      this.form
+        .put("api/user/" + this.form.id)
+        .then(() => {
+          Fire.$emit("LoadUsers");
+          $("#newUser").modal("hide");
+          toast.fire({
+            icon: "success",
+            title: "User updated successfully"
+          });
+          Fire.$emit("LoadUsers");
+          this.finish();
+        })
+        .catch(() => {
+          this.fail();
+        });
     }
   },
-  mounted() {
-    console.log("Component mounted.");
+  created() {
+    this.loadUsers();
+    Fire.$on("LoadUsers", () => {
+      this.loadUsers();
+    });
+    // setInterval(()=>this.loadUsers(),3000);
   }
 };
 </script>
