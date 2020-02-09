@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="col-md-12">
+    <div class="col-md-12" v-show="$gate.isUser()">
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">All Users</h3>
@@ -180,7 +180,9 @@ export default {
       this.$Progress.fail();
     },
     loadUsers() {
-      axios.get("api/user").then(({ data }) => (this.users = data.data));
+      if (this.$gate.isUser()) {
+        axios.get("api/user").then(({ data }) => (this.users = data.data));
+      }
     },
     createUser() {
       this.form
