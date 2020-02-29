@@ -11,9 +11,7 @@ window.Vue = require('vue');
 import moment from 'moment';
 import { Form, HasError, AlertError } from 'vform';
 import Swal from 'sweetalert2';
-import Gate from './Gate';
 
-Vue.prototype.$gate = new Gate(window.user)
 
 window.swal = Swal;
 const Toast = swal.mixin({
@@ -51,8 +49,7 @@ window.Fire = Fire;
 
 const routes = [
     { path: '/dashboard', component: require('./components/Dashboard.vue').default },
-    { path: '/developer', component: require('./components/Developer.vue').default },
-    { path: '/users', component: require('./components/Users.vue').default },
+    { path: '/device', component: require('./components/Device.vue').default },
     { path: '/profile', component: require('./components/Profile.vue').default },
     { path: '/*', component: require('./components/Error.vue').default }
 ]
@@ -83,20 +80,20 @@ Vue.filter('cutDate', function (date) {
 
 
 
-Vue.component(
-    'passport-clients',
-    require('./components/passport/Clients.vue').default
-);
+// Vue.component(
+//     'passport-clients',
+//     require('./components/passport/Clients.vue').default
+// );
 
-Vue.component(
-    'passport-authorized-clients',
-    require('./components/passport/AuthorizedClients.vue').default
-);
+// Vue.component(
+//     'passport-authorized-clients',
+//     require('./components/passport/AuthorizedClients.vue').default
+// );
 
-Vue.component(
-    'passport-personal-access-tokens',
-    require('./components/passport/PersonalAccessTokens.vue').default
-);
+// Vue.component(
+//     'passport-personal-access-tokens',
+//     require('./components/passport/PersonalAccessTokens.vue').default
+// );
 
 Vue.component('error-404', require('./components/Error.vue').default);
 
