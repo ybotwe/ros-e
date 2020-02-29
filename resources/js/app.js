@@ -13,7 +13,7 @@ import { Form, HasError, AlertError } from 'vform';
 import Swal from 'sweetalert2';
 import Gate from './Gate';
 
-Vue.prototype.$gate=new Gate(window.user)
+Vue.prototype.$gate = new Gate(window.user)
 
 window.swal = Swal;
 const Toast = swal.mixin({
@@ -45,7 +45,7 @@ Vue.use(VueProgressBar, {
     height: '3px'
 })
 
-let Fire= new Vue();
+let Fire = new Vue();
 window.Fire = Fire;
 
 
@@ -53,7 +53,8 @@ const routes = [
     { path: '/dashboard', component: require('./components/Dashboard.vue').default },
     { path: '/developer', component: require('./components/Developer.vue').default },
     { path: '/users', component: require('./components/Users.vue').default },
-    { path: '/profile', component: require('./components/Profile.vue').default }
+    { path: '/profile', component: require('./components/Profile.vue').default },
+    { path: '/*', component: require('./components/Error.vue').default }
 ]
 
 const router = new VueRouter({
@@ -97,6 +98,12 @@ Vue.component(
     require('./components/passport/PersonalAccessTokens.vue').default
 );
 
+Vue.component('error-404', require('./components/Error.vue').default);
+
+Vue.component('pagination', require('laravel-vue-pagination'));
+
+
+
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**
@@ -107,5 +114,18 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
     el: '#app',
-    router
+    router,
+    data() {
+        return {
+            query: ""
+        }
+    },
+    methods: {
+        search: _.debounce(() => {
+            Fire.$emit('searching');
+        }, 1000),
+        printme() {
+            window.print();
+        }
+    },
 });

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="col-md-12" v-show="$gate.isUser()">
+    <div class="col-md-12" v-show="$gate.canManage()">
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">All Users</h3>
@@ -116,7 +116,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="user in users" :key="user.id">
+              <tr v-for="user in users.data" :key="user.id">
                 <td>{{ user.id }}</td>
                 <td>{{ user.name }}</td>
                 <td>{{ user.email }}</td>
@@ -134,9 +134,16 @@
             </tbody>
           </table>
         </div>
+        <div class="card-footer">
+          <pagination :data="users" @pagination-change-page="getResults"></pagination>
+        </div>
         <!-- /.card-body -->
       </div>
       <!-- /.card -->
+    </div>
+
+    <div v-if="!$gate.canManage()">
+      <error-404></error-404>
     </div>
   </div>
 </template>
@@ -159,6 +166,11 @@ export default {
     };
   },
   methods: {
+    getResults(page = 1) {
+      axios.get("api/user?page=" + page).then(response => {
+        this.users = response.data;
+      });
+    },
     editModal(user) {
       this.edit = true;
       this.form.reset();
@@ -180,8 +192,8 @@ export default {
       this.$Progress.fail();
     },
     loadUsers() {
-      if (this.$gate.isUser()) {
-        axios.get("api/user").then(({ data }) => (this.users = data.data));
+      if (this.$gate.canManage()) {
+        axios.get("api/user").then(({ data }) => (this.users = data));
       }
     },
     createUser() {
@@ -256,10 +268,21 @@ export default {
     }
   },
   created() {
+    // console.log(this.$gate.canManage());
+    Fire.$on("searching", () => {
+      let query = this.$parent.query;
+      axios
+        .get("api/findUser?q=" + query)
+        .then(data => {
+          this.users = data;
+        })
+        .catch(() => {});
+    });
     this.loadUsers();
     Fire.$on("LoadUsers", () => {
       this.loadUsers();
     });
+
     // setInterval(()=>this.loadUsers(),3000);
   }
 };

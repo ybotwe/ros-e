@@ -30,8 +30,27 @@ class UserController extends Controller
      */
     public function index()
     {
-        $this->authorize('isUser');
-        return User::latest()->paginate(10);
+        // $this->authorize('isAdmin');
+        if (\Gate::allows('isAdmin') || \Gate::allows('isAuthor')) {
+            # code...
+            return User::latest()->paginate(5);
+        }
+    }
+
+
+    public function search(){
+
+        if ($search = \Request::get('q')) {
+            $users = User::where(function($query) use ($search){
+                $query->where('name','LIKE',"%$search%")
+                        ->orWhere('email','LIKE',"%$search%");
+            })->paginate(5);
+        }else{
+            $users = User::latest()->paginate(5);
+        }
+
+        return $users;
+
     }
 
     /**
@@ -57,7 +76,7 @@ class UserController extends Controller
         ]);
     }
 
-    
+
     public function profile()
     {
         return auth('api')->user();
@@ -86,39 +105,39 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $this->validate($request, [
             'name'       => 'required|string|max:191',
-            'email'      => 'required|string|email|max:191|unique:users,email,'.$user->id,
+            'email'      => 'required|string|email|max:191|unique:users,email,' . $user->id,
             'password'   => 'sometimes|min:6'
         ]);
         $user->update($request->all());
-        return['message'=>$user->name.' Updated'];
+        return ['message' => $user->name . ' Updated'];
     }
 
     public function updateProfile(Request $request)
     {
-        $user= auth('api')->user();
+        $user = auth('api')->user();
         $this->validate($request, [
             'name'       => 'required|string|max:191',
-            'email'      => 'required|string|email|max:191|unique:users,email,'.$user->id,
+            'email'      => 'required|string|email|max:191|unique:users,email,' . $user->id,
             'password'   => 'sometimes|min:6'
         ]);
         $currentPhoto = $user->photo;
-        if($request->photo != $currentPhoto){
-            $name =time().'.'.explode('/',explode(':',substr($request->photo,0,strpos($request->photo,';')))[1])[1];
-            \Image::make($request->photo)->save(public_path('img/profile/').$name);
-            $request->merge(['photo'=>$name]);
+        if ($request->photo != $currentPhoto) {
+            $name = time() . '.' . explode('/', explode(':', substr($request->photo, 0, strpos($request->photo, ';')))[1])[1];
+            \Image::make($request->photo)->save(public_path('img/profile/') . $name);
+            $request->merge(['photo' => $name]);
 
-            $userPhoto= public_path('img/profile/').$currentPhoto;
-            if(file_exists($userPhoto)){
+            $userPhoto = public_path('img/profile/') . $currentPhoto;
+            if (file_exists($userPhoto)) {
                 @unlink($userPhoto);
             }
         }
 
-        if(!empty($request->password)){
-            $request->merge(['password'=>Hash::make($request['password'])]);
+        if (!empty($request->password)) {
+            $request->merge(['password' => Hash::make($request['password'])]);
         }
 
         $user->update($request->all());
-        return ['message'=>'Success'];
+        return ['message' => 'Success'];
     }
 
     /**
@@ -133,6 +152,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return ['message'=>'deleted'];
+        return ['message' => 'deleted'];
     }
 }
