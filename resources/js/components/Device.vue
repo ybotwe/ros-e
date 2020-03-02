@@ -10,7 +10,7 @@
                         <h3 class="card-title">Devices Table</h3>
 
                         <div class="card-tools">
-                            <button class="btn btn-success" data-toggle="modal" data-target="#addNew">Add New Device<i class="fas fa-plus fa-fw"></i></button>
+                            <button class="btn btn-success" data-toggle="modal"  data-target="#addNew">Add New Device<i class="fas fa-plus fa-fw"></i></button>
                         </div>
                     </div>
                     <!-- /.card-header -->
@@ -20,7 +20,7 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Reference Number</th>
-                            <th>Modify</th>
+                            <th>Delete</th>
                         </tr>
                         <tr v-for="device in devices" :key="device.id">
                             <td>{{ device.id }}</td>
@@ -28,10 +28,7 @@
                             <td>{{device.refnum }}</td>
 
                             <td>
-                                <a href="#">
-                                    <i class="fa fa-edit blue"></i>
-                                </a>
-                                /
+                
                                 <a href="#" @click="deleteDevice(device.id)">
                                     <i class="fa fa-trash red"></i>
                                 </a>
@@ -115,13 +112,15 @@
             }
         },
         methods: {
+            
+
             addDevice(){
                 this.$Progress.start(); 
                 this.form.post('api/device')
                 .then(()=>{
-                    $('#addNew').modal('hide')
                     Fire.$emit('AfterCreate');
-                    
+                    $('#addNew').hide();
+                    $('.modal-backdrop').hide();
                     
                     swal({
                         position: 'top-end',
@@ -170,9 +169,9 @@
                             }
                             
                         }
-                    }).then((result) => {
+                    }).then((isConfirm) => {
 
-                    // if(result.value){
+                    if(isConfirm){
                         this.form.delete('api/device/'+id).then(() =>{
 
                         swal(
@@ -184,9 +183,11 @@
                         }).catch(() => {
                             swal("Failed", "There was something wrong.", "warning");
                         })
-                    // }
+                    }
                     
                     
+                }).catch(() => {
+                    console.log("Error deleting");
                 })
             }
         },

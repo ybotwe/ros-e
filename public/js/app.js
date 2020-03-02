@@ -2123,9 +2123,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2143,8 +2140,9 @@ __webpack_require__.r(__webpack_exports__);
 
       this.$Progress.start();
       this.form.post('api/device').then(function () {
-        $('#addNew').modal('hide');
         Fire.$emit('AfterCreate');
+        $('#addNew').hide();
+        $('.modal-backdrop').hide();
         swal({
           position: 'top-end',
           icon: 'success',
@@ -2193,15 +2191,17 @@ __webpack_require__.r(__webpack_exports__);
             closeModal: true
           }
         }
-      }).then(function (result) {
-        // if(result.value){
-        _this3.form["delete"]('api/device/' + id).then(function () {
-          swal('Deleted!', 'Your file has been deleted.', 'success');
-          Fire.$emit('AfterCreate');
-        })["catch"](function () {
-          swal("Failed", "There was something wrong.", "warning");
-        }); // }
-
+      }).then(function (isConfirm) {
+        if (isConfirm) {
+          _this3.form["delete"]('api/device/' + id).then(function () {
+            swal('Deleted!', 'Your file has been deleted.', 'success');
+            Fire.$emit('AfterCreate');
+          })["catch"](function () {
+            swal("Failed", "There was something wrong.", "warning");
+          });
+        }
+      })["catch"](function () {
+        console.log("Error deleting");
       });
     }
   },
@@ -80895,10 +80895,6 @@ var render = function() {
                       _c("td", [_vm._v(_vm._s(device.refnum))]),
                       _vm._v(" "),
                       _c("td", [
-                        _vm._m(2, true),
-                        _vm._v(
-                          "\n                            /\n                            "
-                        ),
                         _c(
                           "a",
                           {
@@ -80944,7 +80940,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(3),
+              _vm._m(2),
               _vm._v(" "),
               _c(
                 "form",
@@ -81077,7 +81073,7 @@ var render = function() {
                     )
                   ]),
                   _vm._v(" "),
-                  _vm._m(4)
+                  _vm._m(3)
                 ]
               )
             ])
@@ -81121,15 +81117,7 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("th", [_vm._v("Reference Number")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Modify")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("a", { attrs: { href: "#" } }, [
-      _c("i", { staticClass: "fa fa-edit blue" })
+      _c("th", [_vm._v("Delete")])
     ])
   },
   function() {
