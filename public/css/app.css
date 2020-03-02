@@ -30869,8 +30869,16 @@ readers do not read off random characters that represent icons */
 }
 
 .router-link-exact-active {
-  background: #008cff;
-  color: white !important;
+  background-color: #2D2926;
+  color: white;
+}
+
+.router-link-exact-active p {
+  color: white;
+}
+
+.router-link-exact-active i {
+  color: white;
 }
 
 .profile-img {

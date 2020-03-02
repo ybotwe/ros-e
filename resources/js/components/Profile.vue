@@ -68,7 +68,7 @@
 
                   <div class="form-group">
                     <div class="ml-3 col-sm-10">
-                      <button type="submit" class="btn btn-danger">Update</button>
+                      <button type="submit" class="btn btn-info">Update</button>
                     </div>
                   </div>
                 </form>
@@ -95,25 +95,7 @@ export default {
     };
   },
   methods: {
-    updateProfileImage(e) {
-      let file = e.target.files[0];
-      //   console.log(file);
-
-      let reader = new FileReader();
-      if (file["size"] < 2097152) {
-        //5242880 -> 5MB
-        reader.onloadend = () => {
-          this.form.photo = reader.result;
-          this.file = file.name;
-        };
-        reader.readAsDataURL(file);
-      } else {
-        toast.fire({
-          icon: "error",
-          title: "Image should be less than 5MB"
-        });
-      }
-    },
+    
     updateProfile() {
       this.$Progress.start();
       this.form
@@ -125,13 +107,6 @@ export default {
         .catch(() => {
           this.$Progress.fail();
         });
-    },
-    getProfilePicture() {
-      let photo =
-        this.form.photo.length > 100
-          ? this.form.photo
-          : "img/profile/" + this.form.photo;
-      return photo;
     }
   },
   created() {

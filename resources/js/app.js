@@ -13,19 +13,19 @@ import { Form, HasError, AlertError } from 'vform';
 import Swal from 'sweetalert2';
 
 
+
 window.swal = Swal;
 const Toast = swal.mixin({
     toast: true,
     position: 'top-end',
     showConfirmButton: false,
     timer: 3000,
-    timerProgressBar: true,
-    onOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
-    }
+    // timerProgressBar: true,
+    // onOpen: (toast) => {
+    //     toast.addEventListener('mouseenter', Swal.stopTimer)
+    //     toast.addEventListener('mouseleave', Swal.resumeTimer)
+    // }
 })
-
 window.toast = Toast;
 
 
@@ -36,6 +36,13 @@ Vue.component(AlertError.name, AlertError)
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
+
+import Chartkick from 'vue-chartkick'
+import Chart from 'chart.js'
+ 
+Vue.use(Chartkick.use(Chart))
+
+
 import VueProgressBar from 'vue-progressbar'
 Vue.use(VueProgressBar, {
     color: 'rgb(143, 255, 199)',
@@ -43,8 +50,7 @@ Vue.use(VueProgressBar, {
     height: '3px'
 })
 
-let Fire = new Vue();
-window.Fire = Fire;
+
 
 
 const routes = [
@@ -99,6 +105,9 @@ Vue.component('error-404', require('./components/Error.vue').default);
 
 Vue.component('pagination', require('laravel-vue-pagination'));
 
+
+let Fire = new Vue();
+window.Fire = Fire;
 
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
