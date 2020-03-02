@@ -15,6 +15,7 @@ import Swal from 'sweetalert2';
 
 
 window.swal = Swal;
+
 const Toast = swal.mixin({
     toast: true,
     position: 'top-end',

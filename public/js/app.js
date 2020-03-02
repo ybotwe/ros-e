@@ -2143,11 +2143,18 @@ __webpack_require__.r(__webpack_exports__);
 
       this.$Progress.start();
       this.form.post('api/device').then(function () {
-        Fire.$emit('AfterCreate');
         $('#addNew').modal('hide');
-        toast({
-          type: 'success',
-          title: 'New Device added'
+        Fire.$emit('AfterCreate');
+        swal({
+          position: 'top-end',
+          icon: 'success',
+          title: 'New device has been added',
+          buttons: {
+            confirm: {
+              visible: false
+            }
+          },
+          timer: 1500
         });
 
         _this.$Progress.finish();
@@ -2166,23 +2173,35 @@ __webpack_require__.r(__webpack_exports__);
     deleteDevice: function deleteDevice(id) {
       var _this3 = this;
 
-      Swal.Fire({
+      swal({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
         icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then(function (result) {
-        if (result.value) {
-          _this3.form["delete"]('api/device/' + id).then(function () {
-            Swal.Fire('Deleted!', 'Your file has been deleted.', 'success');
-            Fire.$emit('AfterCreate');
-          })["catch"](function () {
-            Swal.Fire("Failed", "There was something wrong.", "warning");
-          });
+        buttons: {
+          confirm: {
+            text: "Delete!",
+            value: true,
+            visible: true,
+            className: "",
+            closeModal: true
+          },
+          cancel: {
+            text: "Cancel",
+            value: false,
+            visible: true,
+            className: "",
+            closeModal: true
+          }
         }
+      }).then(function (result) {
+        // if(result.value){
+        _this3.form["delete"]('api/device/' + id).then(function () {
+          swal('Deleted!', 'Your file has been deleted.', 'success');
+          Fire.$emit('AfterCreate');
+        })["catch"](function () {
+          swal("Failed", "There was something wrong.", "warning");
+        }); // }
+
       });
     }
   },

@@ -119,12 +119,20 @@
                 this.$Progress.start(); 
                 this.form.post('api/device')
                 .then(()=>{
+                    $('#addNew').modal('hide')
                     Fire.$emit('AfterCreate');
                     
-                    $('#addNew').modal('hide')
-                    toast({
-                        type:'success',
-                        title:'New Device added'
+                    
+                    swal({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'New device has been added',
+                        buttons: {
+                            confirm:{
+                                visible: false
+                            }
+                        },
+                        timer: 1500
                     })
 
 
@@ -141,29 +149,42 @@
             },
 
             deleteDevice(id){
-                Swal.Fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                swal({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        buttons: {
+                            confirm: {
+                                text: "Delete!",
+                                value: true,
+                                visible: true,
+                                className: "",
+                                closeModal: true
+                            },
+                            cancel: {
+                                text: "Cancel",
+                                value: false,
+                                visible: true,
+                                className: "",
+                                closeModal: true,
+                            }
+                            
+                        }
                     }).then((result) => {
 
-                    if(result.value){
+                    // if(result.value){
                         this.form.delete('api/device/'+id).then(() =>{
 
-                        Swal.Fire(
+                        swal(
                         'Deleted!',
                         'Your file has been deleted.',
                         'success'
                         )
                         Fire.$emit('AfterCreate'); 
                         }).catch(() => {
-                            Swal.Fire("Failed", "There was something wrong.", "warning");
+                            swal("Failed", "There was something wrong.", "warning");
                         })
-                    }
+                    // }
                     
                     
                 })
