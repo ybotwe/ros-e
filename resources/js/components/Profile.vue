@@ -6,32 +6,32 @@
             
                 <form class="form-horizontal" @submit.prevent="updateProfile">
                   <div class="form-group">
-                    <label for="inputName" class="col-sm-2 col-form-label">First Name</label>
+                    <label for="firstname" class="col-sm-2 col-form-label">First Name</label>
                     <div class="col-sm-10">
                       <input
                         type="text"
                         v-model="form.firstname"
                         class="form-control"
-                        id="inputName"
+                        id="firstname"
                         placeholder="First Name"
                         :class="{ 'is-invalid': form.errors.has('firstname') }"
                       />
-                      <has-error :form="form" field="name"></has-error>
+                      <has-error :form="form" field="firstname"></has-error>
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label for="inputName" class="col-sm-2 col-form-label">Last Name</label>
+                    <label for="lastname" class="col-sm-2 col-form-label">Last Name</label>
                     <div class="col-sm-10">
                       <input
                         type="text"
                         v-model="form.lastname"
                         class="form-control"
-                        id="inputName"
+                        id="lastname"
                         placeholder="Last Name"
                         :class="{ 'is-invalid': form.errors.has('lastname') }"
                       />
-                      <has-error :form="form" field="name"></has-error>
+                      <has-error :form="form" field="lastname"></has-error>
                     </div>
                   </div>
 

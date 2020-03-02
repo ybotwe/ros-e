@@ -81306,7 +81306,7 @@ var render = function() {
                     "label",
                     {
                       staticClass: "col-sm-2 col-form-label",
-                      attrs: { for: "inputName" }
+                      attrs: { for: "firstname" }
                     },
                     [_vm._v("First Name")]
                   ),
@@ -81330,7 +81330,7 @@ var render = function() {
                         },
                         attrs: {
                           type: "text",
-                          id: "inputName",
+                          id: "firstname",
                           placeholder: "First Name"
                         },
                         domProps: { value: _vm.form.firstname },
@@ -81345,7 +81345,7 @@ var render = function() {
                       }),
                       _vm._v(" "),
                       _c("has-error", {
-                        attrs: { form: _vm.form, field: "name" }
+                        attrs: { form: _vm.form, field: "firstname" }
                       })
                     ],
                     1
@@ -81357,7 +81357,7 @@ var render = function() {
                     "label",
                     {
                       staticClass: "col-sm-2 col-form-label",
-                      attrs: { for: "inputName" }
+                      attrs: { for: "lastname" }
                     },
                     [_vm._v("Last Name")]
                   ),
@@ -81381,7 +81381,7 @@ var render = function() {
                         },
                         attrs: {
                           type: "text",
-                          id: "inputName",
+                          id: "lastname",
                           placeholder: "Last Name"
                         },
                         domProps: { value: _vm.form.lastname },
@@ -81396,7 +81396,7 @@ var render = function() {
                       }),
                       _vm._v(" "),
                       _c("has-error", {
-                        attrs: { form: _vm.form, field: "name" }
+                        attrs: { form: _vm.form, field: "lastname" }
                       })
                     ],
                     1

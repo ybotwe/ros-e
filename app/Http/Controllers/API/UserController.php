@@ -47,16 +47,15 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'       => 'required|string|max:191',
+            'firstname'       => 'required|string|max:191',
+            'lastname'       => 'required|string|max:191',
             'email'      => 'required|email|max:191|unique:users',
             'password'   => 'required|min:6',
-            'role'   => 'required|string'
         ]);
         return User::create([
-            'name' => $request['name'],
+            'firstname' => $request['firstname'],
+            'lastname' => $request['lastname'],
             'email' => $request['email'],
-            'role' => $request['role'],
-            'bio' => $request['bio'],
             'password' => Hash::make($request['password']),
         ]);
     }
@@ -89,9 +88,10 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $this->validate($request, [
-            'name'       => 'required|string|max:191',
-            'email'      => 'required|string|email|max:191|unique:users,email,' . $user->id,
-            'password'   => 'sometimes|min:6'
+            'firstname'       => 'required|string|max:191',
+            'lastname'       => 'required|string|max:191',
+            'email'      => 'required|email|max:191|unique:users',
+            'password'   => 'required|min:6',
         ]);
         $user->update($request->all());
         return ['message' => $user->name . ' Updated'];
@@ -99,30 +99,17 @@ class UserController extends Controller
 
     public function updateProfile(Request $request)
     {
-        $user = auth('api')->user();
+        $user_id = auth('api')->user()->id;
+        $user = User::findOrFail($user_id);
         $this->validate($request, [
-            'name'       => 'required|string|max:191',
-            'email'      => 'required|string|email|max:191|unique:users,email,' . $user->id,
-            'password'   => 'sometimes|min:6'
+            'firstname'       => 'required|string|max:191',
+            'lastname'       => 'required|string|max:191',
+            'email'      => 'required|email|max:191|unique:users',
+            'password'   => 'required|min:6',
         ]);
-        $currentPhoto = $user->photo;
-        if ($request->photo != $currentPhoto) {
-            $name = time() . '.' . explode('/', explode(':', substr($request->photo, 0, strpos($request->photo, ';')))[1])[1];
-            \Image::make($request->photo)->save(public_path('img/profile/') . $name);
-            $request->merge(['photo' => $name]);
-
-            $userPhoto = public_path('img/profile/') . $currentPhoto;
-            if (file_exists($userPhoto)) {
-                @unlink($userPhoto);
-            }
-        }
-
-        if (!empty($request->password)) {
-            $request->merge(['password' => Hash::make($request['password'])]);
-        }
-
+        $request['password'] = Hash::make($request['password']);
         $user->update($request->all());
-        return ['message' => 'Success'];
+        return ['message' => $user->name . ' Updated'];
     }
 
     /**
