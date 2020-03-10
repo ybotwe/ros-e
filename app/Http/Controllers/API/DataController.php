@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use App\Device;
+use Illuminate\Http\Request;
+use App\Data;
 
-
-class DeviceController extends Controller
+class DataController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +15,7 @@ class DeviceController extends Controller
      */
     public function index()
     {
-        $user_id = auth('api')->user()->id;
-        return Device::where('user_id', $user_id)->paginate(10);
+        return Data::all();
     }
 
     /**
@@ -29,12 +26,7 @@ class DeviceController extends Controller
      */
     public function store(Request $request)
     {
-        $user_id = auth('api')->user()->id;
-        return Device::create([
-            'name' => $request['name'],
-            'refnum' => $request['refnum'],
-            'user_id' => $user_id
-        ]); 
+        //
     }
 
     /**
@@ -68,9 +60,6 @@ class DeviceController extends Controller
      */
     public function destroy($id)
     {
-        $device = Device::findOrFail($id);
-
-        $device->delete();
-        return ['message' => 'Device deleted'];
+        //
     }
 }

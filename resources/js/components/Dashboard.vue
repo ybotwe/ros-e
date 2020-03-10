@@ -3,7 +3,7 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <div class="card">
           <div class="card-header">
             <h3 class="card-title">Line Chart</h3>
@@ -27,64 +27,78 @@
                   <div class></div>
                 </div>
               </div>
-              <line-chart :data="chartData"></line-chart>
+              <canvas id="canvas" height="350" width="1000"></canvas>
             </div>
           </div>
           <!-- /.card-body -->
         </div>
       </div>
 
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Line Chart</h3>
 
-            <div class="card-tools">
-              <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fas fa-minus"></i>
-              </button>
-              <button type="button" class="btn btn-tool" data-card-widget="remove">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="chart">
-              <div class="chartjs-size-monitor">
-                <div class="chartjs-size-monitor-expand">
-                  <div class></div>
-                </div>
-                <div class="chartjs-size-monitor-shrink">
-                  <div class></div>
-                </div>
-              </div>
-              <line-chart :data="chartData"></line-chart>
-            </div>
-          </div>
-          <!-- /.card-body -->
-        </div>
-      </div>
     </div>
   </div>
 </template>
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.js" charset="utf-8"></script>
 <script>
 export default {
   mounted() {
-    console.log("Component mounted.");
-  },
-  data(){
-      return{
-          chartData:{
-              '2017-05-13': 2,
-              '2017-05-14': 5,
-              '2017-05-15': 4,
-              
-          }
-      }
-  }
+    if (localStorage.getItem('reloaded')) {
+        // The page was just reloaded. Clear the value from local storage
+        // so that it will reload the next time this page is visited.
+        localStorage.removeItem('reloaded');
+    } else {
+        // Set a flag so that we know not to reload the page twice.
+        localStorage.setItem('reloaded', '1');
+        location.reload();
+    }
+}
+  
 };
+
+  var url = "api/data";
+  
+  var Time = new Array();
+  var Temps = new Array();
+  $(document).ready(function(){
+    $.get(url, function(response){
+      response.forEach(function(data){
+          Time.push(data.timestamp);
+          Temps.push(data.temp);
+      });
+      var ctx = document.getElementById("canvas").getContext('2d');
+          var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels:Time,
+                datasets: [{
+                    label: '',
+                    data: Temps,
+                    borderWidth: 1,
+                    borderColor: "#2D2926",
+                    borderDash: [5, 5],
+                    backgroundColor: "rgba(0,0,0,0)",
+                    pointBackgroundColor: "#2D2926",
+                    pointBorderColor: "#2D2926",
+                    pointHoverBackgroundColor: "#2D2926",
+                    pointHoverBorderColor: "#2D2926",
+
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+        });
+    });
+  });
+
 </script>
 
 

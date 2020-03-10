@@ -1968,47 +1968,57 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
-    console.log("Component mounted.");
-  },
-  data: function data() {
-    return {
-      chartData: {
-        '2017-05-13': 2,
-        '2017-05-14': 5,
-        '2017-05-15': 4
-      }
-    };
+    if (localStorage.getItem('reloaded')) {
+      // The page was just reloaded. Clear the value from local storage
+      // so that it will reload the next time this page is visited.
+      localStorage.removeItem('reloaded');
+    } else {
+      // Set a flag so that we know not to reload the page twice.
+      localStorage.setItem('reloaded', '1');
+      location.reload();
+    }
   }
+});
+var url = "api/data";
+var Time = new Array();
+var Temps = new Array();
+$(document).ready(function () {
+  $.get(url, function (response) {
+    response.forEach(function (data) {
+      Time.push(data.timestamp);
+      Temps.push(data.temp);
+    });
+    var ctx = document.getElementById("canvas").getContext('2d');
+    var myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: Time,
+        datasets: [{
+          label: '',
+          data: Temps,
+          borderWidth: 1,
+          borderColor: "#2D2926",
+          borderDash: [5, 5],
+          backgroundColor: "rgba(0,0,0,0)",
+          pointBackgroundColor: "#2D2926",
+          pointBorderColor: "#2D2926",
+          pointHoverBackgroundColor: "#2D2926",
+          pointHoverBorderColor: "#2D2926"
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+  });
 });
 
 /***/ }),
@@ -80728,127 +80738,61 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-6" }, [
-        _c("div", { staticClass: "card" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-body" }, [
-            _c(
-              "div",
-              { staticClass: "chart" },
-              [
-                _vm._m(1),
-                _vm._v(" "),
-                _c("line-chart", { attrs: { data: _vm.chartData } })
-              ],
-              1
-            )
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-6" }, [
-        _c("div", { staticClass: "card" }, [
-          _vm._m(2),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-body" }, [
-            _c(
-              "div",
-              { staticClass: "chart" },
-              [
-                _vm._m(3),
-                _vm._v(" "),
-                _c("line-chart", { attrs: { data: _vm.chartData } })
-              ],
-              1
-            )
-          ])
-        ])
-      ])
-    ])
-  ])
+  return _vm._m(0)
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-header" }, [
-      _c("h3", { staticClass: "card-title" }, [_vm._v("Line Chart")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "card-tools" }, [
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-tool",
-            attrs: { type: "button", "data-card-widget": "collapse" }
-          },
-          [_c("i", { staticClass: "fas fa-minus" })]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-tool",
-            attrs: { type: "button", "data-card-widget": "remove" }
-          },
-          [_c("i", { staticClass: "fas fa-times" })]
-        )
+    return _c("div", { staticClass: "container" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-12" }, [
+          _c("div", { staticClass: "card" }, [
+            _c("div", { staticClass: "card-header" }, [
+              _c("h3", { staticClass: "card-title" }, [_vm._v("Line Chart")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-tools" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-tool",
+                    attrs: { type: "button", "data-card-widget": "collapse" }
+                  },
+                  [_c("i", { staticClass: "fas fa-minus" })]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-tool",
+                    attrs: { type: "button", "data-card-widget": "remove" }
+                  },
+                  [_c("i", { staticClass: "fas fa-times" })]
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-body" }, [
+              _c("div", { staticClass: "chart" }, [
+                _c("div", { staticClass: "chartjs-size-monitor" }, [
+                  _c("div", { staticClass: "chartjs-size-monitor-expand" }, [
+                    _c("div", {})
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "chartjs-size-monitor-shrink" }, [
+                    _c("div", {})
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("canvas", {
+                  attrs: { id: "canvas", height: "350", width: "1000" }
+                })
+              ])
+            ])
+          ])
+        ])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "chartjs-size-monitor" }, [
-      _c("div", { staticClass: "chartjs-size-monitor-expand" }, [
-        _c("div", {})
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "chartjs-size-monitor-shrink" }, [_c("div", {})])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-header" }, [
-      _c("h3", { staticClass: "card-title" }, [_vm._v("Line Chart")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "card-tools" }, [
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-tool",
-            attrs: { type: "button", "data-card-widget": "collapse" }
-          },
-          [_c("i", { staticClass: "fas fa-minus" })]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-tool",
-            attrs: { type: "button", "data-card-widget": "remove" }
-          },
-          [_c("i", { staticClass: "fas fa-times" })]
-        )
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "chartjs-size-monitor" }, [
-      _c("div", { staticClass: "chartjs-size-monitor-expand" }, [
-        _c("div", {})
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "chartjs-size-monitor-shrink" }, [_c("div", {})])
     ])
   }
 ]
