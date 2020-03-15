@@ -58,6 +58,7 @@ const routes = [
     { path: '/dashboard', component: require('./components/Dashboard.vue').default },
     { path: '/device', component: require('./components/Device.vue').default },
     { path: '/profile', component: require('./components/Profile.vue').default },
+    { path: '/user_devices/:deviceId', component: require('./components/UserDevices.vue').default },
     { path: '/*', component: require('./components/Error.vue').default }
 ]
 

@@ -8,14 +8,7 @@
           <div class="card-header">
             <h3 class="card-title">Line Chart</h3>
 
-            <div class="card-tools">
-              <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fas fa-minus"></i>
-              </button>
-              <button type="button" class="btn btn-tool" data-card-widget="remove">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
+            
           </div>
           <div class="card-body">
             <div class="chart">
@@ -34,7 +27,19 @@
         </div>
       </div>
 
-
+      <div class="col-md-12">
+      <div class="card p-3">
+        <h4> List of Devices </h4>
+        <div class="list-group">
+          <div v-for="device in devices.data">
+          <a  v-bind:href=" '/user_devices/' + device.id" class="list-group-item list-group-item-action">
+            {{device.name}}             >
+          </a>
+          </div>
+          
+        </div>
+      </div>
+      </div>
     </div>
   </div>
 </template>
@@ -53,7 +58,26 @@ export default {
         localStorage.setItem('reloaded', '1');
         location.reload();
     }
-}
+    
+  }, 
+  data(){
+    return{
+      devices:[],
+      errors: []
+    }
+  },
+  created(){
+    axios.get('api/device').then()
+    .then(response => {
+      // JSON responses are automatically parsed.
+      this.devices = response.data
+      console.log(this.devices)
+    })
+    .catch(e => {
+      this.errors.push(e)
+      console.log("Error nana")
+    })
+  }
   
 };
 
@@ -77,7 +101,6 @@ export default {
                     data: Temps,
                     borderWidth: 1,
                     borderColor: "#2D2926",
-                    borderDash: [5, 5],
                     backgroundColor: "rgba(0,0,0,0)",
                     pointBackgroundColor: "#2D2926",
                     pointBorderColor: "#2D2926",

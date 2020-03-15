@@ -21,10 +21,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::apiResources([
     'user'=>'API\UserController',
     'device'=>'API\DeviceController',
-    'data' => 'API\DataController'
+    'data' => 'API\DataController',
+    // 'deviceData' => 'API\DeviceDataController'
 ]);
 
 
 Route::get('profile','API\UserController@profile');
 Route::put('profile','API\UserController@updateProfile');
 Route::get('findUser','API\UserController@search');
+Route::get('deviceData/{id}', 'API\DeviceDataController@index');
