@@ -6,9 +6,16 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Line Chart</h3>
+            <h3 class="card-title">Temperature Chart</h3>
 
-            
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="remove">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
           </div>
           <div class="card-body">
             <div class="chart">
@@ -25,6 +32,41 @@
           </div>
           <!-- /.card-body -->
         </div>
+
+        
+      </div>
+
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Humidity Chart</h3>
+
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="remove">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="chart">
+              <div class="chartjs-size-monitor">
+                <div class="chartjs-size-monitor-expand">
+                  <div class></div>
+                </div>
+                <div class="chartjs-size-monitor-shrink">
+                  <div class></div>
+                </div>
+              </div>
+              <canvas id="canvas2" height="350" width="1000"></canvas>
+            </div>
+          </div>
+          <!-- /.card-body -->
+        </div>
+
+        
       </div>
 
       <div class="col-md-12">
@@ -122,6 +164,43 @@ export default {
     });
   });
 
+
+var Humid = new Array();
+  $(document).ready(function(){
+    $.get(url, function(response){
+      response.forEach(function(data){
+          Humid.push(data.humid);
+      });
+      var ctx2 = document.getElementById("canvas2").getContext('2d');
+          var myChart2 = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels:Time,
+                datasets: [{
+                    label: '',
+                    data: Humid,
+                    borderWidth: 1,
+                    borderColor: "#2D2926",
+                    backgroundColor: "rgba(0,0,0,0)",
+                    pointBackgroundColor: "#2D2926",
+                    pointBorderColor: "#2D2926",
+                    pointHoverBackgroundColor: "#2D2926",
+                    pointHoverBorderColor: "#2D2926",
+
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+        });
+    });
+  });
 </script>
 
 
