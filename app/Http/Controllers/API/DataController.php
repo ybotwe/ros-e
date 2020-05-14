@@ -15,7 +15,7 @@ class DataController extends Controller
      */
     public function index()
     {
-        return Data::all();
+        return Data::where('deviceID', 1)->get();
     }
 
     /**

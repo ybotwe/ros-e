@@ -80,7 +80,7 @@
 <script>
     export default {
         mounted() {
-            
+            setInterval(() => location.reload(), 60000);
         },
         data(){
             return {
